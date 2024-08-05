@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Dialect Quiz</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .card {
+            background-color: #FFCE00;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        .button {
+            background-color: #000000;
+            color: #FFCE00;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #DD0000;
+        }
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress {
+            height: 100%;
+            background-color: #000000;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .option {
+            margin-bottom: 10px;
+        }
+        .description {
+            background-color: #000000;
+            color: #FFCE00;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+const quizData = [
+  {
+    english: "Hello",
+    options: [
+      { dialect: "Standard German", word: "Hallo" },
+      { dialect: "Bavarian", word: "Grüß Gott" },
+      { dialect: "Low German", word: "Moin" },
+      { dialect: "Berlin Slang", word: "Wat jibt's?" }
+    ],
+    description: "German greetings vary widely across regions. 'Hallo' is the standard greeting used throughout Germany. 'Grüß Gott', literally 'Greet God', is a religious greeting common in Bavaria and Austria. 'Moin', used in northern Germany, is an all-purpose greeting derived from 'Morgen' (morning). 'Wat jibt's?' is a casual 'What's up?' in Berlin dialect, showing the city's direct communication style."
+  },
+  {
+    english: "Goodbye",
+    options: [
+      { dialect: "Standard German", word: "Auf Wiedersehen" },
+      { dialect: "Berlinerisch", word: "Tschüssikowski" },
+      { dialect: "Hessian", word: "Tschö mit ö" },
+      { dialect: "Ruhr Slang", word: "Hau rein!" }
+    ],
+    description: "'Auf Wiedersehen' is the formal way to say goodbye, literally meaning 'until we see again'. 'Tschüssikowski' is a playful, elongated version of 'Tschüss', popular in Berlin. 'Tschö mit ö' is a humorous farewell used in Hesse, playing with the 'ö' sound. 'Hau rein!' is a casual 'take care' or 'see ya' common in the Ruhr area, literally meaning 'hit in'."
+  },
+  {
+    english: "How are you?",
+    options: [
+      { dialect: "Standard German", word: "Wie geht es dir?" },
+      { dialect: "Saxonian", word: "Wie gehd'n dir?" },
+      { dialect: "Ruhr German", word: "Wie isset?" },
+      { dialect: "Swabian", word: "Wie goht's?" }
+    ],
+    description: "'Wie geht es dir?' is the standard way to ask how someone is doing. 'Wie gehd'n dir?' is the Saxon version, known for its soft consonants and unique intonation. 'Wie isset?' is a shortened form common in the Ruhr area, showcasing the region's direct style. 'Wie goht's?' is the Swabian variant, characterized by its unique vowel sounds."
+  },
+  {
+    english: "Cool!",
+    options: [
+      { dialect: "Standard German", word: "Cool!" },
+      { dialect: "Bavarian Slang", word: "Läuft!" },
+      { dialect: "Berlin Slang", word: "Knorke!" },
+      { dialect: "Hamburg Slang", word: "Mächtig gewaltig!" }
+    ],
+    description: "'Cool!' is the English loanword widely used in standard German. 'Läuft!', literally 'it runs', is a Bavarian slang term expressing approval or that something is going well. 'Knorke!' is an old Berlin slang term for 'great' or 'cool', experiencing a revival. 'Mächtig gewaltig!', literally 'mighty powerful', is a term popularized by a TV series set in Hamburg."
+  },
+  {
+    english: "I don't understand",
+    options: [
+      { dialect: "Standard German", word: "Ich verstehe nicht" },
+      { dialect: "Bavarian", word: "I versteh di ned" },
+      { dialect: "Berlinerisch", word: "Ick vasteh nur Bahnhof" },
+      { dialect: "Ruhr Slang", word: "Wat?" }
+    ],
+    description: "'Ich verstehe nicht' is the standard way to express lack of understanding. 'I versteh di ned' is the Bavarian version, showcasing the dialect's tendency to shorten words. 'Ick vasteh nur Bahnhof', literally 'I only understand train station', is a Berlin idiom expressing complete confusion. 'Wat?' is a very short and direct way of expressing confusion, typical for the Ruhr area."
+  },
+  {
+    english: "That's nonsense!",
+    options: [
+      { dialect: "Standard German", word: "Das ist Unsinn!" },
+      { dialect: "Swabian", word: "Des isch Käschtles Nas!" },
+      { dialect: "Hessian Slang", word: "Was für e Geraffel!" },
+      { dialect: "Berlin Slang", word: "Dit is ja Mumpitz!" }
+    ],
+    description: "'Das ist Unsinn!' is the standard way to call something nonsense. 'Des isch Käschtles Nas!', literally 'That's Käschtle's nose', is an idiom meaning 'nonsense' in Swabian. 'Was für e Geraffel!', literally 'What a junk!', is used in Hessian to describe nonsense or useless things. 'Dit is ja Mumpitz!' is a typical Berlin way of calling something nonsense, using the word 'Mumpitz'."
+  },
+  {
+    english: "Cheers!",
+    options: [
+      { dialect: "Standard German", word: "Prost!" },
+      { dialect: "Bavarian", word: "Oans, zwoa, gsuffa!" },
+      { dialect: "Colognian", word: "Kölle Alaaf!" },
+      { dialect: "Saxon Slang", word: "Auf ex und hopp!" }
+    ],
+    description: "'Prost!' is the standard way to say cheers before drinking. 'Oans, zwoa, gsuffa!', literally 'One, two, drunk!', is a traditional Bavarian drinking chant. 'Kölle Alaaf!' is a greeting used as 'cheers' in Cologne, especially during carnival season. 'Auf ex und hopp!', meaning 'down in one go', is Saxon slang encouraging to drink the whole glass at once."
+  },
+  {
+    english: "Hurry up!",
+    options: [
+      { dialect: "Standard German", word: "Beeil dich!" },
+      { dialect: "Swabian", word: "Dapf di!" },
+      { dialect: "Berlin Slang", word: "Mach hinne!" },
+      { dialect: "Ruhr Slang", word: "Zack, Zack!" }
+    ],
+    description: "'Beeil dich!' is the standard way to tell someone to hurry up. 'Dapf di!' is a Swabian expression meaning 'hurry up', showcasing the dialect's conciseness. 'Mach hinne!' is a very direct way to say 'hurry up' in Berlin, literally 'make behind'. 'Zack, Zack!' is an onomatopoeic expression used in the Ruhr area to urge someone to be quick."
+  },
+  {
+    english: "That's expensive!",
+    options: [
+      { dialect: "Standard German", word: "Das ist teuer!" },
+      { dialect: "Bavarian", word: "Des kost a Heidngeld!" },
+      { dialect: "Berlin Slang", word: "Janz schön happig!" },
+      { dialect: "Swabian", word: "Mei Lieber, des koscht fei was!" }
+    ],
+    description: "'Das ist teuer!' is the standard way to express that something is expensive. 'Des kost a Heidngeld!', literally 'That costs heathen money', is a Bavarian expression for something very expensive. 'Janz schön happig!' is a typical Berlin expression meaning 'quite pricey'. 'Mei Lieber, des koscht fei was!' is a Swabian way of expressing surprise at a high price, literally 'My dear, that really costs something!'."
+  },
+  {
+    english: "Goodbye and take care!",
+    options: [
+      { dialect: "Standard German", word: "Mach's gut!" },
+      { dialect: "Bavarian", word: "Pfiat di!" },
+      { dialect: "Hamburg Slang", word: "Moin Moin!" },
+      { dialect: "Franconian", word: "Adee und fall net hi!" }
+    ],
+    description: "'Mach's gut!' is a casual way to say goodbye in standard German, literally 'Make it good'. 'Pfiat di!', derived from 'Behüte dich Gott' (May God protect you), is a warm farewell in Bavaria. 'Moin Moin!' is used for both hello and goodbye in Hamburg, showcasing the city's efficient communication style. 'Adee und fall net hi!', literally 'Goodbye and don't fall over', is a humorous farewell in Franconian."
+  }
+];
+
+        const shuffleArray = (array) => {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        };
+
+        const GermanFlag = () => (
+            <svg className="german-flag" viewBox="0 0 5 3" style={{width: '100%', maxWidth: '200px', height: 'auto', margin: '0 auto 20px'}}>
+                <rect width="5" height="1" fill="#000000"/>
+                <rect width="5" height="1" y="1" fill="#DD0000"/>
+                <rect width="5" height="1" y="2" fill="#FFCE00"/>
+            </svg>
+        );
+
+        const GermanDialectQuiz = () => {
+            const [currentQuestion, setCurrentQuestion] = React.useState(0);
+            const [selectedAnswers, setSelectedAnswers] = React.useState([]);
+            const [showResults, setShowResults] = React.useState(false);
+            const [revealDialects, setRevealDialects] = React.useState(false);
+            const [shuffledOptions, setShuffledOptions] = React.useState([]);
+
+            React.useEffect(() => {
+                setShuffledOptions(shuffleArray([...quizData[currentQuestion].options]));
+            }, [currentQuestion]);
+
+            const handleAnswer = (word) => {
+                const newAnswers = [...selectedAnswers];
+                newAnswers[currentQuestion] = word;
+                setSelectedAnswers(newAnswers);
+                setRevealDialects(true);
+            };
+
+            const nextQuestion = () => {
+                if (currentQuestion < quizData.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    setRevealDialects(false);
+                } else {
+                    setShowResults(true);
+                }
+            };
+
+            const calculateScores = () => {
+                const scores = {};
+                selectedAnswers.forEach((answer, index) => {
+                    const option = quizData[index].options.find(o => o.word === answer);
+                    if (option) {
+                        scores[option.dialect] = (scores[option.dialect] || 0) + 1;
+                    }
+                });
+                return Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            };
+
+            const resetQuiz = () => {
+                setCurrentQuestion(0);
+                setSelectedAnswers([]);
+                setShowResults(false);
+                setRevealDialects(false);
+            };
+
+            if (showResults) {
+                const scores = calculateScores();
+                const maxScore = Math.max(...scores.map(([_, score]) => score));
+                return (
+                    <div className="card">
+                        <h2>Quiz Results</h2>
+                        <GermanFlag />
+                        <div>
+                            {scores.map(([dialect, score]) => (
+                                <div key={dialect} style={{display: 'flex', alignItems: 'center', marginBottom: '10px'}}>
+                                    <div style={{width: '120px'}}>{dialect}:</div>
+                                    <div style={{flexGrow: 1, backgroundColor: '#DD0000', height: '20px', marginRight: '10px'}}>
+                                        <div 
+                                            style={{
+                                                backgroundColor: '#000000', 
+                                                height: '100%', 
+                                                width: `${(score / maxScore) * 100}%`
+                                            }}
+                                        ></div>
+                                    </div>
+                                    <div>{score} {score === 1 ? 'time' : 'times'}</div>
+                                </div>
+                            ))}
+                        </div>
+                        <button className="button" onClick={resetQuiz}>Restart Quiz</button>
+                    </div>
+                );
+            }
+
+            const question = quizData[currentQuestion];
+
+            return (
+                <div className="card">
+                    <h2>Question {currentQuestion + 1} of {quizData.length}</h2>
+                    <div className="progress-bar">
+                        <div 
+                            className="progress" 
+                            style={{width: `${((currentQuestion + 1) / quizData.length) * 100}%`}}
+                        ></div>
+                    </div>
+                    <p>Translate: "{question.english}"</p>
+                    {shuffledOptions.map((option, index) => (
+                        <div key={index} className="option">
+                            <input 
+                                type="radio" 
+                                id={`option-${index}`} 
+                                name="answer" 
+                                value={option.word}
+                                onChange={() => handleAnswer(option.word)}
+                                checked={selectedAnswers[currentQuestion] === option.word}
+                            />
+                            <label htmlFor={`option-${index}`}>
+                                {option.word}
+                                {revealDialects && <span style={{marginLeft: '10px', fontSize: '0.8em'}}>({option.dialect})</span>}
+                            </label>
+                        </div>
+                    ))}
+                    {revealDialects && (
+                        <div className="description">
+                            <p>{question.description}</p>
+                        </div>
+                    )}
+                    <button 
+                        className="button" 
+                        onClick={nextQuestion} 
+                        disabled={!selectedAnswers[currentQuestion]}
+                    >
+                        {currentQuestion === quizData.length - 1 ? 'Finish' : 'Next'}
+                    </button>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<GermanDialectQuiz />, document.getElementById('root'));
+    </script>
+</body>
+</html>
