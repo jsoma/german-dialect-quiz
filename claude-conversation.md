@@ -1,4 +1,4 @@
----
+## Conversation with [Claude](https://claude.ai)
 
 **☺️ User:** Make a react component that is a quiz on regional dialects of German. It gives you a word in English and then provides multiple options in German, asking you to select one. Each translation should be a specific dialect, and each question should always have one option that's standard German (if that's real???). Once you're done it tells you your score for each dialect.
 
