@@ -1,3 +1,5 @@
 # German Dialect Quiz
 
 I made this all myself, no AI tools, just me, I'm really good at all German dialects and also good at React, what now?
+
+(just kidding, [here's the Claude transcript](claude-conversation.md))
